@@ -66,6 +66,25 @@ KeyboardInputManager.prototype.listen = function () {
     if (!modifiers && event.which === 82) {
       self.restart.call(self, event);
     }
+
+    // Enter key (13) hold to restart
+    if (!modifiers && event.which === 13) {
+      if (!self.enterTimeout) {
+        self.enterTimeout = setTimeout(function() {
+          self.restart.call(self, event);
+          self.enterTimeout = null;
+        }, 2000); // 2 seconds
+      }
+    }
+  });
+
+  document.addEventListener("keyup", function (event) {
+    if (event.which === 13) {
+      if (self.enterTimeout) {
+        clearTimeout(self.enterTimeout);
+        self.enterTimeout = null;
+      }
+    }
   });
 
   // Respond to button presses
