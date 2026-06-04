@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MateFácil - Un juego de matemáticas accesible para personas con visión reducida. Aprende y practica sumas, restas, multiplicaciones, divisiones y ecuaciones con alto contraste y soporte de voz.">
+  <title>MateFácil - Juego de Matemáticas Accesible</title>
+  
+  <!-- PWA Settings -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark" data-size="grande">
+
+  <!-- Header / Barra de Accesibilidad superior -->
+  <header class="app-header">
+    <div class="header-top">
+      <h1 id="app-title" class="sr-only">MateFácil - Juego de Matemáticas</h1>
+      <div class="logo-container" aria-hidden="true">
+        <span class="logo-symbol">➕</span>
+        <span class="logo-text">MateFácil</span>
+      </div>
+      
+      <!-- Panel de configuración rápida (Accesibilidad) -->
+      <div class="accessibility-panel" role="region" aria-label="Controles de accesibilidad">
+        <!-- Selector de Tema de Contraste -->
+        <div class="control-group">
+          <label for="theme-select" class="control-label">Tema:</label>
+          <select id="theme-select" class="accessibility-select" aria-label="Cambiar tema de contraste">
+            <option value="dark">Negro y Blanco (Oscuro)</option>
+            <option value="light">Blanco y Negro (Claro)</option>
+            <option value="yellow">Amarillo y Negro</option>
+            <option value="blue">Azul y Amarillo</option>
+          </select>
+        </div>
+
+        <!-- Selector de Tamaño de Texto -->
+        <div class="control-group">
+          <label for="size-select" class="control-label">Texto:</label>
+          <select id="size-select" class="accessibility-select" aria-label="Cambiar tamaño de texto">
+            <option value="grande">Grande</option>
+            <option value="gigante">Gigante</option>
+          </select>
+        </div>
+
+        <!-- Botones rápidos de Audio -->
+        <div class="audio-controls">
+          <button id="btn-speech" class="icon-btn" aria-pressed="false" title="Activar lectura por voz de las preguntas">
+            <span class="icon" aria-hidden="true">🗣️</span>
+            <span class="btn-text">Voz Off</span>
+          </button>
+          <button id="btn-sound" class="icon-btn" aria-pressed="true" title="Desactivar efectos de sonido">
+            <span class="icon" aria-hidden="true">🔊</span>
+            <span class="btn-text">Sonido On</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal del Juego -->
+  <main class="game-container">
+    
+    <!-- PANTALLA DE INICIO -->
+    <section id="screen-start" class="game-screen active">
+      <div class="screen-content">
+        <h2 class="screen-heading">¡Te damos la bienvenida a MateFácil!</h2>
+        <p class="screen-description">
+          Un juego accesible para entrenar tu mente. Responde preguntas matemáticas sencillas. A medida que aciertes de forma consecutiva, la dificultad irá aumentando gradualmente:
+        </p>
+        <ul class="features-list">
+          <li><strong>Nivel 1:</strong> Sumas y restas sencillas.</li>
+          <li><strong>Nivel 2:</strong> Cuentas de dos dígitos y multiplicaciones fáciles.</li>
+          <li><strong>Nivel 3:</strong> Multiplicaciones y divisiones.</li>
+          <li><strong>Nivel 4 y 5:</strong> Ecuaciones sencillas (encuentra el valor de <strong>x</strong>).</li>
+        </ul>
+        <div class="instructions-card">
+          <p><strong>Controles:</strong></p>
+          <p>📱 Toca directamente los botones de respuesta.</p>
+          <p>⌨️ En teclado, usa los números <strong>1, 2, 3 y 4</strong> para responder, y <strong>Espacio</strong> para avanzar.</p>
+        </div>
+        <button id="btn-start" class="btn-primary-accessible">
+          EMPEZAR A JUGAR
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA DE JUEGO (PREGUNTAS) -->
+    <section id="screen-play" class="game-screen">
+      <!-- Barra de Estado / Estadísticas -->
+      <div class="stats-bar" role="region" aria-label="Estadísticas de la partida">
+        <div class="stat-item" id="stat-lives" aria-live="polite">
+          <span class="stat-label">Vidas:</span>
+          <span id="lives-display" class="stat-value">❤️ ❤️ ❤️</span>
+        </div>
+        <div class="stat-item" id="stat-streak" aria-live="polite">
+          <span class="stat-label">Racha:</span>
+          <span id="streak-display" class="stat-value highlight">0</span>
+        </div>
+        <div class="stat-item" id="stat-score">
+          <span class="stat-label">Puntos:</span>
+          <span id="score-display" class="stat-value">0</span>
+        </div>
+      </div>
+
+      <!-- Barra de Progreso Visual de Racha -->
+      <div class="progress-container" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+      </div>
+
+      <!-- Nivel e Indicación -->
+      <div class="level-indicator" id="level-indicator" aria-live="polite">
+        Nivel 1: Sumas y Restas
+      </div>
+
+      <!-- Pregunta Gigante -->
+      <div class="question-container">
+        <div id="question-text" class="question-text" aria-live="assertive" role="alert">
+          <!-- Se llena por JavaScript -->
+          5 + 3 = ?
+        </div>
+      </div>
+
+      <!-- Opciones de Respuesta en Columna -->
+      <div class="options-container" role="radiogroup" aria-labelledby="question-text">
+        <button class="option-btn" data-index="0" role="radio" aria-checked="false">
+          <span class="option-num" aria-hidden="true">1</span>
+          <span class="option-value">12</span>
+        </button>
+        <button class="option-btn" data-index="1" role="radio" aria-checked="false">
+          <span class="option-num" aria-hidden="true">2</span>
+          <span class="option-value">8</span>
+        </button>
+        <button class="option-btn" data-index="2" role="radio" aria-checked="false">
+          <span class="option-num" aria-hidden="true">3</span>
+          <span class="option-value">15</span>
+        </button>
+        <button class="option-btn" data-index="3" role="radio" aria-checked="false">
+          <span class="option-num" aria-hidden="true">4</span>
+          <span class="option-value">6</span>
+        </button>
+      </div>
+
+      <!-- Anuncio de accesibilidad para resultados -->
+      <div id="sr-feedback" class="sr-only" aria-live="assertive"></div>
+
+      <!-- Banner de Retroalimentación posterior a responder -->
+      <div id="feedback-banner" class="feedback-banner hidden">
+        <div class="feedback-content">
+          <p id="feedback-message" class="feedback-message">¡Correcto!</p>
+          <button id="btn-next" class="btn-primary-accessible">
+            SIGUIENTE PREGUNTA
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA DE FIN DE JUEGO (GAME OVER) -->
+    <section id="screen-gameover" class="game-screen">
+      <div class="screen-content">
+        <h2 class="screen-heading alert-text">¡Fin de la Partida!</h2>
+        <div class="results-card">
+          <div class="result-row">
+            <span class="result-label">Puntaje Final:</span>
+            <span id="final-score" class="result-value">0</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Racha Máxima:</span>
+            <span id="final-streak" class="result-value">0</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Récord Histórico:</span>
+            <span id="high-score" class="result-value">0</span>
+          </div>
+        </div>
+        <button id="btn-restart" class="btn-primary-accessible">
+          JUGAR DE NUEVO
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>MateFácil &copy; 2026. Accesibilidad garantizada.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script>
+    // Registro del Service Worker para soporte offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('Service Worker registrado con éxito.', reg.scope))
+          .catch(err => console.warn('Error al registrar Service Worker.', err));
+      });
+    }
+  </script>
+</body>
+</html>

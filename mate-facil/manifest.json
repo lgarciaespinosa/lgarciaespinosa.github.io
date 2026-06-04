@@ -1,0 +1,24 @@
+{
+  "name": "MateFácil - Matemáticas Accesibles",
+  "short_name": "MateFácil",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Juego de matemáticas adaptativo y accesible con alto contraste, lectura por voz y soporte offline para personas con visión reducida.",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

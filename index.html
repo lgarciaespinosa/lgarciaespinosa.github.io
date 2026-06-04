@@ -163,6 +163,26 @@
       transition: transform 0.3s ease;
     }
 
+    .card-icon.matefacil {
+      background-color: #00FF00;
+      color: #000000;
+      box-shadow: 0 8px 16px rgba(0, 255, 0, 0.25);
+    }
+
+    .card.matefacil:hover {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
+                  0 0 50px rgba(0, 255, 0, 0.15);
+    }
+
+    .card-link.matefacil {
+      background: linear-gradient(135deg, #00FF00 0%, #00aa00 100%);
+      color: #000000;
+    }
+
+    .card-link.matefacil:hover {
+      box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4);
+    }
+
     .card:hover .card-icon {
       transform: scale(1.08) rotate(-4deg);
     }
@@ -267,6 +287,21 @@
           <p class="card-desc">El clásico juego de puzzle donde combinas bloques numerados hasta conseguir la baldosa 2048. Totalmente jugable sin conexión e instalable en tu celular.</p>
         </div>
         <a href="./2048/" class="card-link">Jugar Ahora</a>
+      </div>
+
+      <!-- MateFácil Card -->
+      <div class="card matefacil">
+        <div>
+          <div class="card-icon matefacil">➕➖</div>
+          <h2 class="card-title">MateFácil</h2>
+          <div class="badges">
+            <span class="badge pwa">PWA</span>
+            <span class="badge">Accesible</span>
+            <span class="badge">Offline</span>
+          </div>
+          <p class="card-desc">Juego de matemáticas adaptativo diseñado para personas con visión reducida. Con alto contraste, lectura por voz (TTS) y niveles progresivos desde sumas sencillas hasta ecuaciones.</p>
+        </div>
+        <a href="./mate-facil/" class="card-link matefacil">Jugar Ahora</a>
       </div>
       
       <!-- Placeholder card for future projects -->
