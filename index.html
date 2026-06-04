@@ -1,14 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=./2048/">
-  <title>Redirecting...</title>
-  <script type="text/javascript">
-    window.location.href = "./2048/"
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lgarciaespinosa.github.io | Proyectos</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* Styling System */
+    :root {
+      --bg-color: #0d0f14;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(255, 255, 255, 0.2);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #edc22e;
+      --primary-glow: rgba(237, 194, 46, 0.15);
+      --accent: #8b5cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient background glow */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(237,194,46,0.08) 0%, rgba(139,92,246,0.05) 50%, transparent 100%);
+      top: -100px;
+      right: -100px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, rgba(237,194,46,0.03) 60%, transparent 100%);
+      bottom: -200px;
+      left: -200px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    header {
+      padding: 3.5rem 2rem 2rem 2rem;
+      text-align: center;
+      z-index: 10;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.05em;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      z-index: 10;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      max-width: 1000px;
+      justify-content: center;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: var(--card-border-hover);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
+                  0 0 50px var(--primary-glow);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      width: 64px;
+      height: 64px;
+      background-color: var(--primary);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #776e65;
+      box-shadow: 0 8px 16px rgba(237, 194, 46, 0.2);
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-icon {
+      transform: scale(1.08) rotate(-4deg);
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .badge.pwa {
+      border-color: rgba(139, 92, 246, 0.3);
+      color: #a78bfa;
+      background: rgba(139, 92, 246, 0.05);
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #d4a317 100%);
+      color: #3b352e;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .card-link:hover {
+      box-shadow: 0 4px 15px rgba(237, 194, 46, 0.4);
+      filter: brightness(1.05);
+    }
+
+    footer {
+      padding: 2rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      z-index: 10;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2rem;
+      }
+      header {
+        padding: 2rem 1rem 1rem 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo a <a href="./2048/">2048</a>...</p>
+
+  <header>
+    <h1>lgarciaespinosa.github.io</h1>
+    <p class="subtitle">Explora mis desarrollos web y aplicaciones interactivas.</p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <!-- 2048 Card -->
+      <div class="card">
+        <div>
+          <div class="card-icon">2048</div>
+          <h2 class="card-title">2048 Game</h2>
+          <div class="badges">
+            <span class="badge pwa">PWA</span>
+            <span class="badge">Juego</span>
+            <span class="badge">Offline</span>
+          </div>
+          <p class="card-desc">El clásico juego de puzzle donde combinas bloques numerados hasta conseguir la baldosa 2048. Totalmente jugable sin conexión e instalable en tu celular.</p>
+        </div>
+        <a href="./2048/" class="card-link">Jugar Ahora</a>
+      </div>
+      
+      <!-- Placeholder card for future projects -->
+      <div class="card" style="opacity: 0.5; border-style: dashed; background: transparent; cursor: not-allowed; box-shadow: none;">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 200px; text-align: center;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-bottom: 1rem;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: var(--text-muted); margin-bottom: 0.25rem;">Próximo Proyecto</h3>
+          <p style="font-size: 0.85rem; color: rgba(255,255,255,0.25);">Se agregará automáticamente al crear un nuevo repositorio.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 lgarciaespinosa.github.io. Todos los derechos reservados.</p>
+  </footer>
+
 </body>
 </html>
