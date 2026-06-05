@@ -1,7 +1,9 @@
 {
+  "id": "/mate-facil/",
+  "scope": "/mate-facil/",
   "name": "MateFácil - Matemáticas Accesibles",
   "short_name": "MateFácil",
-  "start_url": "./index.html",
+  "start_url": "/mate-facil/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
