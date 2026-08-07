@@ -134,6 +134,10 @@ body {
   color: var(--text-main);
 }
 
+.question-text:focus {
+  outline: none;
+}
+
 /* Contenedor de Botones de Opciones */
 .options-container {
   display: flex;
@@ -163,6 +167,7 @@ body {
   transform: scale(0.98);
 }
 
+.option-btn:focus,
 .option-btn:focus-visible {
   outline: 5px solid var(--focus-color);
   border-color: var(--focus-color);

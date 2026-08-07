@@ -207,32 +207,30 @@ function generateQuestion() {
     }
   }
   
-  // Generar 3 opciones incorrectas únicas muy cercanas al valor correcto
+  // Generar 3 opciones incorrectas únicas muy cercanas al valor correcto (garantizado sin bucles infinitos)
   const incorrects = new Set();
+  // Probar candidatos cercanos preferentes
+  const pool = [
+    correctVal + 1,
+    correctVal - 1,
+    correctVal + 2,
+    correctVal - 2,
+    correctVal + 3,
+    correctVal - 3,
+    correctVal + 4
+  ];
   
-  while (incorrects.size < 3) {
-    let candidate = 0;
-    const rand = Math.random();
-    
-    if (rand < 0.35) {
-      candidate = correctVal + 1;
-    } else if (rand < 0.70) {
-      candidate = correctVal - 1;
-    } else if (rand < 0.85) {
-      candidate = correctVal + 2;
-    } else {
-      candidate = correctVal - 2;
-    }
-    
+  for (const candidate of pool) {
     if (candidate > 0 && candidate !== correctVal) {
       incorrects.add(candidate);
+      if (incorrects.size === 3) break;
     }
   }
   
-  // Si no logramos tener 3 opciones únicas, rellenamos con consecutivos
+  // Garantía de respaldo si el conjunto no alcanzó 3 opciones
   let fallback = 1;
   while (incorrects.size < 3) {
-    if (fallback !== correctVal) {
+    if (fallback !== correctVal && !incorrects.has(fallback)) {
       incorrects.add(fallback);
     }
     fallback++;
@@ -285,6 +283,11 @@ function renderQuestion() {
     btn.querySelector('.option-value').textContent = val;
   });
   
+  // Posicionar foco en el texto de la pregunta para accesibilidad y lectores de pantalla
+  if (elements.questionText) {
+    elements.questionText.focus();
+  }
+  
   // Lectura automática de voz al aparecer la pregunta
   speakText(state.currentQuestion.spoken);
 }
@@ -328,8 +331,8 @@ function handleAnswer(selectedIndex) {
     elements.srFeedback.textContent = feedbackText;
     speakText(feedbackText);
     
-    // Auto-avance rápido en 2.3 segundos
-    state.autoAdvanceTimer = setTimeout(renderQuestion, 2300);
+    // Auto-avance pausado en 3.0 segundos (ideal para rehabilitación cognitiva)
+    state.autoAdvanceTimer = setTimeout(renderQuestion, 3000);
     
   } else {
     // Respuesta Incorrecta
@@ -352,8 +355,8 @@ function handleAnswer(selectedIndex) {
     elements.srFeedback.textContent = feedbackText;
     speakText(feedbackText);
     
-    // Auto-avance más lento (3.5 segundos) para dar tiempo a asimilar la respuesta correcta
-    state.autoAdvanceTimer = setTimeout(renderQuestion, 3500);
+    // Auto-avance en 4.2 segundos para dar tiempo a procesar la corrección
+    state.autoAdvanceTimer = setTimeout(renderQuestion, 4200);
   }
 }
 
